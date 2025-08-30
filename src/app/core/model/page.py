@@ -1,8 +1,10 @@
-from pydantic import BaseModel
 from typing import Any
-from .pageable import Pageable
+
+from pydantic import BaseModel
+
+from .pagination import Pagination
 
 
 class Page(BaseModel):
     data: list[Any]
-    meta: Pageable
+    meta: Pagination
