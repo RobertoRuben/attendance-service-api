@@ -1,5 +1,5 @@
+from datetime import date
 import pendulum
-from pendulum import date, datetime
 
 from src.app.core.exception.conflict_exception import ConflictException
 from src.app.core.exception.decorator import service_handle_exceptions
@@ -9,9 +9,6 @@ from src.app.domain.classrooms.dto.request import SectionRequestDTO
 from src.app.domain.classrooms.dto.response import (
     SectionPageResponseDTO,
     SectionResponseDTO,
-)
-from src.app.domain.classrooms.dto.response.grade_page_response_dto import (
-    GradePageResponseDTO,
 )
 from src.app.domain.classrooms.model import Section
 from src.app.domain.classrooms.repository.interface import ISectionRepository
@@ -43,18 +40,17 @@ class SectionServiceImpl(ISectionService):
             SectionResponseDTO: Data of the created section.
         """
         existing_section = await self.section_repository.exists_by(
-            section_name=section_request.section_name, grade_id=section_request.grade_id
+            section_name=section_request.section_name
         )
 
         if existing_section:
             raise ConflictException(
                 message="Section with this name already exists in the specified grade.",
-                details=f"A section with name '{section_request.section_name}' already exists in grade ID '{section_request.grade_id}'.",
+                details=f"A section with name '{section_request.section_name}' already exists.",
             )
 
         new_section = Section(
             section_name=section_request.section_name,
-            grade_id=section_request.grade_id,
         )
 
         created_section = await self.section_repository.save(new_section)
@@ -62,20 +58,20 @@ class SectionServiceImpl(ISectionService):
         return SectionResponseDTO.model_validate(created_section)
 
     @service_handle_exceptions
-    async def get_all_sections(self) -> list[GradePageResponseDTO]:
+    async def get_all_sections(self) -> list[SectionResponseDTO]:
         """
         Retrieve all existing sections.
 
         Returns:
-            list[GradePageResponseDTO]: List of all sections.
+            list[SectionResponseDTO]: List of all sections.
         """
         sections = await self.section_repository.get_all()
-        return [GradePageResponseDTO.model_validate(section) for section in sections]
+        return [SectionResponseDTO.model_validate(section) for section in sections]
 
     @service_handle_exceptions
     async def update_section(
         self, section_id: int, section_request: SectionRequestDTO
-    ) -> SectionPageResponseDTO:
+    ) -> SectionResponseDTO:
         """
         Update an existing section by its identifier.
 
@@ -94,22 +90,17 @@ class SectionServiceImpl(ISectionService):
                 details=f"Section with ID '{section_id}' does not exist.",
             )
 
-        if (
-            existing_section.section_name != section_request.section_name
-            or existing_section.grade_id != section_request.grade_id
-        ):
+        if existing_section.section_name != section_request.section_name:
             if await self.section_repository.exists_by(
                 section_name=section_request.section_name,
-                grade_id=section_request.grade_id,
             ):
                 raise ConflictException(
-                    message="Section with this name already exists in the specified grade.",
-                    details=f"A section with name '{section_request.section_name}' already exists in grade ID '{section_request.grade_id}'.",
+                    message="Section with this name already exists.",
+                    details=f"A section with name '{section_request.section_name}' already exists.",
                 )
 
         update_section = Section(
             section_name=section_request.section_name,
-            grade_id=section_request.grade_id,
             updated_at=pendulum.now("America/Lima"),
         )
 
@@ -118,7 +109,7 @@ class SectionServiceImpl(ISectionService):
             update_section.model_dump(exclude_none=True, exclude={"id", "created_at"}),
         )
 
-        return SectionPageResponseDTO.model_validate(updated_section)
+        return SectionResponseDTO.model_validate(updated_section)
 
     @service_handle_exceptions
     async def delete_section(self, section_id: int) -> MessageResponse:
@@ -224,22 +215,57 @@ class SectionServiceImpl(ISectionService):
         if created_from or created_to:
             date_conditions = {}
             if created_from:
-                date_conditions["gte"] = datetime.combine(
-                    created_from, pendulum.time.min
+                # Usar pendulum.instance() para crear un datetime desde date + time
+                date_conditions["gte"] = pendulum.instance(
+                    pendulum.datetime(
+                        created_from.year,
+                        created_from.month,
+                        created_from.day,
+                        0,
+                        0,
+                        0,
+                        tz="America/Lima",
+                    )
                 )
             if created_to:
-                date_conditions["lte"] = datetime.combine(created_to, pendulum.time.max)
+                date_conditions["lte"] = pendulum.instance(
+                    pendulum.datetime(
+                        created_to.year,
+                        created_to.month,
+                        created_to.day,
+                        23,
+                        59,
+                        59,
+                        tz="America/Lima",
+                    )
+                )
             where_conditions["created_at"] = date_conditions
 
         if updated_from or updated_to:
             update_conditions = {}
             if updated_from:
-                update_conditions["gte"] = datetime.combine(
-                    updated_from, pendulum.time.min
+                update_conditions["gte"] = pendulum.instance(
+                    pendulum.datetime(
+                        updated_from.year,
+                        updated_from.month,
+                        updated_from.day,
+                        0,
+                        0,
+                        0,
+                        tz="America/Lima",
+                    )
                 )
             if updated_to:
-                update_conditions["lte"] = datetime.combine(
-                    updated_to, pendulum.time.max
+                update_conditions["lte"] = pendulum.instance(
+                    pendulum.datetime(
+                        updated_to.year,
+                        updated_to.month,
+                        updated_to.day,
+                        23,
+                        59,
+                        59,
+                        tz="America/Lima",
+                    )
                 )
             where_conditions["updated_at"] = update_conditions
 

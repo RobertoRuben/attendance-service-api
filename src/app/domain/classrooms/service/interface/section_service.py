@@ -43,7 +43,7 @@ class ISectionService(ABC):
     @abstractmethod
     async def update_section(
         self, section_id: int, section_request: SectionRequestDTO
-    ) -> SectionPageResponseDTO:
+    ) -> SectionResponseDTO:
         """
         Update an existing section by its identifier.
 
