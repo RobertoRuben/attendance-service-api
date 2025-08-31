@@ -13,8 +13,10 @@ class Section(SQLModel, table=True):
     """
 
     __tablename__ = "sections"
-    __table_args__ = CheckConstraint(
-        "LENGTH(section_name) > 0", name="check_section_name_not_empty"
+    __table_args__ = (
+        CheckConstraint(
+            "LENGTH(TRIM(section_name)) > 0", name="check_section_name_not_empty"
+        ),
     )
 
     id: int | None = Field(default=None, sa_column=Column(BIGINT, primary_key=True))
