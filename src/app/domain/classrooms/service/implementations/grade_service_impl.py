@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from src.app.core.exception.conflict_exception import ConflictException
 from src.app.core.exception.decorator import service_handle_exceptions
 from src.app.core.exception.not_found_exception import NotFoundException
@@ -144,7 +145,7 @@ class GradeServiceImpl(IGradeService):
         return GradeResponseDTO.model_validate(grade)
 
     @service_handle_exceptions
-    async def get_pageable_grades(self, page: int, size: int) -> GradePageResponseDTO:
+    async def get_paginated_grades(self, page: int, size: int) -> GradePageResponseDTO:
         """
         Get a paginated list of grades.
 
@@ -210,4 +211,5 @@ class GradeServiceImpl(IGradeService):
 
         items = [GradeResponseDTO.model_validate(item) for item in page_result.data]
 
+        return GradePageResponseDTO(data=items, meta=page_result.meta)
         return GradePageResponseDTO(data=items, meta=page_result.meta)

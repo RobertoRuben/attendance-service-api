@@ -1,10 +1,11 @@
+from abc import ABC, abstractmethod
+
 from src.app.core.model.message_response import MessageResponse
 from src.app.domain.classrooms.dto.request import GradeRequestDTO
 from src.app.domain.classrooms.dto.response import (
-    GradeResponseDTO,
     GradePageResponseDTO,
+    GradeResponseDTO,
 )
-from abc import ABC, abstractmethod
 
 
 class IGradeService(ABC):
@@ -87,7 +88,7 @@ class IGradeService(ABC):
         pass
 
     @abstractmethod
-    async def get_pageable_grades(self, page: int, size: int) -> GradePageResponseDTO:
+    async def get_paginated_grades(self, page: int, size: int) -> GradePageResponseDTO:
         """
         Get a page of grades using standard pagination parameters.
 
@@ -112,4 +113,5 @@ class IGradeService(ABC):
         Returns:
             GradePageResponseDTO: Paginated result.
         """
+        pass
         pass
