@@ -1,5 +1,7 @@
 from datetime import datetime
 
+import pendulum
+
 from src.app.core.exception.conflict_exception import ConflictException
 from src.app.core.exception.decorator import service_handle_exceptions
 from src.app.core.exception.not_found_exception import NotFoundException
@@ -89,8 +91,13 @@ class GradeServiceImpl(IGradeService):
                     details=f"A grade with name '{grade_request.grade_name}' already exists.",
                 )
 
+        update_grade = Grade(
+            grade_name=grade_request.grade_name, updated_at=pendulum.now("America/Lima")
+        )
+
         updated_grade = await self.grade_repository.update_by_id(
-            grade_id=grade_id, grade_data=grade_request
+            grade_id,
+            update_grade.model_dump(exclude_none=True, exclude={"id", "created_at"}),
         )
 
         return GradeResponseDTO.model_validate(updated_grade)
@@ -114,7 +121,7 @@ class GradeServiceImpl(IGradeService):
                 details=f"Grade with ID '{grade_id}' does not exist.",
             )
 
-        await self.grade_repository.delete_by_id(grade_id)
+        await self.grade_repository.delete(grade_id)
 
         return MessageResponse(
             status_code=200,
@@ -156,15 +163,11 @@ class GradeServiceImpl(IGradeService):
         Returns:
             GradePageResponseDTO: The paginated list of grades.
         """
-        grades = await self.grade_repository.get_pageable(page, size)
-        total = await self.grade_repository.count()
+        page_result = await self.grade_repository.get_pageable(page, size)
 
-        return GradePageResponseDTO(
-            items=[GradeResponseDTO.model_validate(grade) for grade in grades],
-            total=total,
-            page=page,
-            size=size,
-        )
+        items = [GradeResponseDTO.model_validate(item) for item in page_result.data]
+
+        return GradePageResponseDTO(data=items, meta=page_result.meta)
 
     @service_handle_exceptions
     async def find_pageable_grades(
@@ -211,5 +214,4 @@ class GradeServiceImpl(IGradeService):
 
         items = [GradeResponseDTO.model_validate(item) for item in page_result.data]
 
-        return GradePageResponseDTO(data=items, meta=page_result.meta)
         return GradePageResponseDTO(data=items, meta=page_result.meta)
