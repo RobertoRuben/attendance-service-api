@@ -15,13 +15,17 @@ class Grade(SQLModel, table=True):
     """Represents a grade in the system.
 
     :ivar id: The unique identifier for the grade.
-    :ivar name: The name of the grade.
+    :ivar grade_name: The name of the grade.
     :ivar created_at: The timestamp when the grade was created.
     :ivar updated_at: The timestamp when the grade was last updated.
     """
 
     __tablename__ = "grades"
-    __table_args__ = CheckConstraint("LENGTH(name) > 0", name="check_name_not_empty")
+    __table_args__ = (
+        CheckConstraint(
+            "LENGTH(TRIM(grade_name)) > 0", name="check_grade_name_not_empty"
+        ),
+    )
 
     id: int | None = Field(default=None, sa_column=Column(BIGINT, primary_key=True))
     grade_name: str = Field(sa_column=Column(TEXT, nullable=False, unique=True))
