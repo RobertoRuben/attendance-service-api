@@ -186,6 +186,7 @@ dependencies = [
     { name = "pydantic-settings" },
     { name = "pyjwt" },
     { name = "reportlab" },
+    { name = "scalar-fastapi" },
     { name = "sqlmodel" },
 ]
 
@@ -199,6 +200,7 @@ requires-dist = [
     { name = "pydantic-settings", specifier = ">=2.10.1" },
     { name = "pyjwt", specifier = ">=2.10.1" },
     { name = "reportlab", specifier = ">=4.4.3" },
+    { name = "scalar-fastapi", specifier = ">=1.3.0" },
     { name = "sqlmodel", specifier = ">=0.0.24" },
 ]
 
@@ -1200,6 +1202,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/a6/24/ba2bdaf04a19b5331c051b9d480e8daca832bed4aeaa156d6d679044c06c/rignore-0.6.4-pp311-pypy311_pp73-musllinux_1_2_armv7l.whl", hash = "sha256:30f3d688df7eb4850318f1b5864d14f2c5fe5dbf3803ed0fc8329d2a7ad560dc", size = 1136368, upload-time = "2025-07-19T19:24:19.68Z" },
     { url = "https://files.pythonhosted.org/packages/83/48/7cf52353299e02aa629150007fa75f4b91d99b4f2fa536f2e24ead810116/rignore-0.6.4-pp311-pypy311_pp73-musllinux_1_2_i686.whl", hash = "sha256:028f62a7b0a6235bb3f03c9e7f342352e7fa4b3f08c761c72f9de8faee40ed9c", size = 1111714, upload-time = "2025-07-19T19:24:31.717Z" },
     { url = "https://files.pythonhosted.org/packages/84/9c/3881ad34f01942af0cf713e25e476bf851e04e389cc3ff146c3b459ab861/rignore-0.6.4-pp311-pypy311_pp73-musllinux_1_2_x86_64.whl", hash = "sha256:7e6c425603db2c147eace4f752ca3cd4551e7568c9d332175d586c68bcbe3d8d", size = 1122433, upload-time = "2025-07-19T19:24:43.973Z" },
+]
+
+[[package]]
+name = "scalar-fastapi"
+version = "1.3.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/bc/c4/fed018d6fe32893984412347f9e4e180844103db1047a1a4f79d01230ec0/scalar_fastapi-1.3.0.tar.gz", hash = "sha256:d2a00d7826ae7803f549862fbb34c934e7ed87d9e43538887bfcde8f39ead952", size = 10546, upload-time = "2025-08-22T18:13:53.447Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fc/a9/2f23d4bca40a5d30df5fc500c2de0f4e3992ce0a6f2b57c4129ba1d31742/scalar_fastapi-1.3.0-py3-none-any.whl", hash = "sha256:1fc9270f8566cc3edf3a8d410e906e0a4e55ba389a0ff36a024c2b94e34dbf0c", size = 12896, upload-time = "2025-08-22T18:13:52.539Z" },
 ]
 
 [[package]]
