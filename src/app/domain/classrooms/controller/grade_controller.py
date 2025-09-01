@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Path, Query, Request
+from fastapi import APIRouter, Depends, Path, Query, Request, status
 
 from src.app.core.exception import (
     BadRequestException,
@@ -31,18 +31,30 @@ grades_tags_metadata = {
     "",
     response_model=GradeResponseDTO,
     summary="Create a new grade",
-    status_code=201,
+    status_code=status.HTTP_201_CREATED,
     responses={
-        201: {"model": GradeResponseDTO, "description": "Successfully created grade."},
-        400: {"model": BadRequestException, "description": "Invalid request data."},
-        409: {
-            "model": ConflictException,
-            "description": "A grade with the same name already exists.",
+        status.HTTP_201_CREATED: {
+            "model": GradeResponseDTO,
+            "description": "Grade successfully created",
         },
-        500: {"model": ServerException, "description": "Internal server error."},
+        status.HTTP_400_BAD_REQUEST: {
+            "model": BadRequestException,
+            "description": "Invalid request data or validation errors",
+        },
+        status.HTTP_409_CONFLICT: {
+            "model": ConflictException,
+            "description": "Grade name already exists in system",
+        },
+        status.HTTP_500_INTERNAL_SERVER_ERROR: {
+            "model": ServerException,
+            "description": "Internal server error occurred",
+        },
     },
     description="""
-    This endpoint creates a new grade.
+    Creates a new grade level in the educational system with the provided information. The grade name must be unique 
+    across the entire system to prevent duplicates. This endpoint validates all input data including grade name, 
+    level number, and associated metadata before creating the record. Successfully created grades can then be used 
+    to organize students and sections within the academic structure.
     """,
 )
 @controller_handle_exceptions
@@ -74,17 +86,26 @@ async def create_grade(
     "",
     response_model=list[GradeResponseDTO],
     summary="Get all grades",
-    status_code=200,
+    status_code=status.HTTP_200_OK,
     responses={
-        200: {
+        status.HTTP_200_OK: {
             "model": list[GradeResponseDTO],
-            "description": "Successfully retrieved all grades.",
+            "description": "All grades retrieved successfully",
         },
-        400: {"model": BadRequestException, "description": "Invalid request data."},
-        500: {"model": ServerException, "description": "Internal server error."},
+        status.HTTP_400_BAD_REQUEST: {
+            "model": BadRequestException,
+            "description": "Invalid request parameters",
+        },
+        status.HTTP_500_INTERNAL_SERVER_ERROR: {
+            "model": ServerException,
+            "description": "Internal server error occurred",
+        },
     },
     description="""
-    This endpoint retrieves all grades.
+    Retrieves a complete list of all grade levels available in the educational system. This endpoint returns all grades 
+    without any filtering or pagination, providing a comprehensive overview of the academic structure. It's particularly 
+    useful for populating dropdown menus, generating reports, or when you need to display all available grade options. 
+    For large datasets, consider using the paginated endpoint for better performance.
     """,
 )
 @controller_handle_exceptions
@@ -112,18 +133,26 @@ async def get_all_grades(
     "/search",
     response_model=GradePageResponseDTO,
     summary="Search grades with filters",
-    status_code=200,
+    status_code=status.HTTP_200_OK,
     responses={
-        200: {
+        status.HTTP_200_OK: {
             "model": GradePageResponseDTO,
-            "description": "Successfully retrieved filtered grades.",
+            "description": "Filtered grades retrieved successfully",
         },
-        400: {"model": BadRequestException, "description": "Invalid request data."},
-        500: {"model": ServerException, "description": "Internal server error."},
+        status.HTTP_400_BAD_REQUEST: {
+            "model": BadRequestException,
+            "description": "Invalid filter or pagination parameters",
+        },
+        status.HTTP_500_INTERNAL_SERVER_ERROR: {
+            "model": ServerException,
+            "description": "Internal server error occurred",
+        },
     },
     description="""
-    This endpoint searches grades with optional filters including grade name,
-    creation date range, and pagination.
+    Searches and filters grades using multiple criteria including grade name (with partial matching support) and creation 
+    date ranges. This endpoint provides advanced search capabilities with pagination support for efficient data handling. 
+    All filter parameters are optional and can be combined to create precise search queries. The partial name matching 
+    allows for flexible searching, while date range filters help find grades created within specific time periods.
     """,
 )
 @controller_handle_exceptions
@@ -174,17 +203,26 @@ async def search_grades(
     "/paginated",
     response_model=GradePageResponseDTO,
     summary="Get paginated grades",
-    status_code=200,
+    status_code=status.HTTP_200_OK,
     responses={
-        200: {
+        status.HTTP_200_OK: {
             "model": GradePageResponseDTO,
-            "description": "Successfully retrieved paginated grades.",
+            "description": "Paginated grades retrieved successfully",
         },
-        400: {"model": BadRequestException, "description": "Invalid request data."},
-        500: {"model": ServerException, "description": "Internal server error."},
+        status.HTTP_400_BAD_REQUEST: {
+            "model": BadRequestException,
+            "description": "Invalid pagination parameters",
+        },
+        status.HTTP_500_INTERNAL_SERVER_ERROR: {
+            "model": ServerException,
+            "description": "Internal server error occurred",
+        },
     },
     description="""
-    This endpoint retrieves paginated grades using basic pagination.
+    Retrieves grades using basic pagination controls for efficient data browsing and display. This endpoint provides 
+    simple pagination without filtering capabilities, making it ideal for displaying grades in tables, lists, or grid 
+    views where performance is important. The page size is configurable with a maximum limit of 100 items per page 
+    to ensure optimal response times and prevent excessive data transfer.
     """,
 )
 @controller_handle_exceptions
@@ -217,18 +255,30 @@ async def get_paginated_grades(
     "/{grade_id}",
     response_model=GradeResponseDTO,
     summary="Get grade by ID",
-    status_code=200,
+    status_code=status.HTTP_200_OK,
     responses={
-        200: {
+        status.HTTP_200_OK: {
             "model": GradeResponseDTO,
-            "description": "Successfully retrieved grade.",
+            "description": "Grade retrieved successfully",
         },
-        404: {"model": NotFoundException, "description": "Grade not found."},
-        400: {"model": BadRequestException, "description": "Invalid grade ID."},
-        500: {"model": ServerException, "description": "Internal server error."},
+        status.HTTP_404_NOT_FOUND: {
+            "model": NotFoundException,
+            "description": "Grade not found with specified ID",
+        },
+        status.HTTP_400_BAD_REQUEST: {
+            "model": BadRequestException,
+            "description": "Invalid grade ID format",
+        },
+        status.HTTP_500_INTERNAL_SERVER_ERROR: {
+            "model": ServerException,
+            "description": "Internal server error occurred",
+        },
     },
     description="""
-    This endpoint retrieves a specific grade by its ID.
+    Retrieves detailed information for a specific grade level using its unique identifier. This endpoint is used when 
+    you need complete grade information including all associated metadata and relationships. The grade ID must be a 
+    positive integer, and the system will return comprehensive grade details if the record exists. This is commonly 
+    used for grade detail views, editing forms, or when building hierarchical academic structures.
     """,
 )
 @controller_handle_exceptions
@@ -262,19 +312,34 @@ async def get_grade_by_id(
     "/{grade_id}",
     response_model=GradeResponseDTO,
     summary="Update an existing grade",
-    status_code=200,
+    status_code=status.HTTP_200_OK,
     responses={
-        200: {"model": GradeResponseDTO, "description": "Successfully updated grade."},
-        404: {"model": NotFoundException, "description": "Grade not found."},
-        400: {"model": BadRequestException, "description": "Invalid request data."},
-        409: {
-            "model": ConflictException,
-            "description": "A grade with the same name already exists.",
+        status.HTTP_200_OK: {
+            "model": GradeResponseDTO,
+            "description": "Grade updated successfully",
         },
-        500: {"model": ServerException, "description": "Internal server error."},
+        status.HTTP_404_NOT_FOUND: {
+            "model": NotFoundException,
+            "description": "Grade not found with specified ID",
+        },
+        status.HTTP_400_BAD_REQUEST: {
+            "model": BadRequestException,
+            "description": "Invalid request data or grade ID",
+        },
+        status.HTTP_409_CONFLICT: {
+            "model": ConflictException,
+            "description": "Grade name already exists in system",
+        },
+        status.HTTP_500_INTERNAL_SERVER_ERROR: {
+            "model": ServerException,
+            "description": "Internal server error occurred",
+        },
     },
     description="""
-    This endpoint updates an existing grade by its ID.
+    Updates the information of an existing grade level identified by its unique ID. This endpoint performs a complete 
+    update of the grade data with the provided information, maintaining data integrity and validation rules. The system 
+    verifies that the grade exists, validates the new data, and checks for name conflicts before applying changes. 
+    All grade names must remain unique across the system to prevent duplicates and maintain academic structure consistency.
     """,
 )
 @controller_handle_exceptions
@@ -313,15 +378,30 @@ async def update_grade(
     "/{grade_id}",
     response_model=MessageResponse,
     summary="Delete a grade",
-    status_code=200,
+    status_code=status.HTTP_200_OK,
     responses={
-        200: {"model": MessageResponse, "description": "Successfully deleted grade."},
-        404: {"model": NotFoundException, "description": "Grade not found."},
-        400: {"model": BadRequestException, "description": "Invalid grade ID."},
-        500: {"model": ServerException, "description": "Internal server error."},
+        status.HTTP_200_OK: {
+            "model": MessageResponse,
+            "description": "Grade deleted successfully",
+        },
+        status.HTTP_404_NOT_FOUND: {
+            "model": NotFoundException,
+            "description": "Grade not found with specified ID",
+        },
+        status.HTTP_400_BAD_REQUEST: {
+            "model": BadRequestException,
+            "description": "Invalid grade ID format",
+        },
+        status.HTTP_500_INTERNAL_SERVER_ERROR: {
+            "model": ServerException,
+            "description": "Internal server error occurred",
+        },
     },
     description="""
-    This endpoint deletes a grade by its ID.
+    Permanently removes a grade level from the educational system using its unique identifier. This operation is 
+    irreversible and will completely delete the grade record along with all associated metadata. The system validates 
+    that the grade exists and checks for any dependencies (such as associated sections or students) before performing 
+    the deletion. A confirmation message is returned upon successful completion of the delete operation.
     """,
 )
 @controller_handle_exceptions
