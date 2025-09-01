@@ -3,10 +3,11 @@ from contextlib import asynccontextmanager
 from src.app.core.db import init_db
 from src.app.core.exception import register_exception_handlers
 from src.app.domain.classrooms.controller import grade_router, grades_tags_metadata
+from src.app.domain.classrooms.controller import section_router, sections_tags_metadata
 
 API_PREFIX = "/api/v1"
 
-tags_metadata = [grades_tags_metadata]
+tags_metadata = [grades_tags_metadata, sections_tags_metadata]
 
 
 @asynccontextmanager
@@ -38,3 +39,4 @@ app = FastAPI(
 )
 
 app.include_router(grade_router, prefix=API_PREFIX)
+app.include_router(section_router, prefix=API_PREFIX)
