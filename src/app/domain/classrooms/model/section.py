@@ -1,6 +1,19 @@
 from datetime import datetime
-from sqlalchemy import CheckConstraint
-from sqlmodel import SQLModel, Field, Column, BIGINT, TEXT, DateTime, text
+from typing import TYPE_CHECKING
+from sqlmodel import (
+    SQLModel,
+    Field,
+    Column,
+    BIGINT,
+    TEXT,
+    DateTime,
+    text,
+    CheckConstraint,
+    Relationship,
+)
+
+if TYPE_CHECKING:
+    from src.app.domain.students.model import Student
 
 
 class Section(SQLModel, table=True):
@@ -32,3 +45,5 @@ class Section(SQLModel, table=True):
         default=None,
         sa_column=Column(DateTime(timezone=True)),
     )
+
+    students: list["Student"] = Relationship(back_populates="section")

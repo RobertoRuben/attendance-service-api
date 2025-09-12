@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 from sqlmodel import (
     Field,
     SQLModel,
@@ -8,7 +9,11 @@ from sqlmodel import (
     CheckConstraint,
     DateTime,
     text,
+    Relationship
 )
+
+if TYPE_CHECKING:
+    from src.app.domain.students.model import Student
 
 
 class Grade(SQLModel, table=True):
@@ -40,3 +45,5 @@ class Grade(SQLModel, table=True):
         default=None,
         sa_column=Column(DateTime(timezone=True)),
     )
+    
+    students: list["Student"] = Relationship(back_populates="grade")
