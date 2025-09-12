@@ -58,15 +58,15 @@ class Student(SQLModel, table=True):
         sa_column=Column(
             BIGINT,
             ForeignKey("grades.id", name="fk_students_grade", ondelete="RESTRICT"),
+            nullable=False,
         ),
-        nullable=False,
     )
     section_id: int = Field(
         sa_column=Column(
             BIGINT,
             ForeignKey("sections.id", name="fk_students_section", ondelete="RESTRICT"),
+            nullable=False,
         ),
-        nullable=False,
     )
 
     created_at: datetime | None = Field(
