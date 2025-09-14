@@ -20,23 +20,43 @@ if TYPE_CHECKING:
 
 
 class Student(SQLModel, table=True):
-    """
-    Represents a student in the system.
+    """Represents a student in the educational system.
 
-    Args:
-        SQLModel (_type_): _description_
-        table (bool, optional): _description_. Defaults to True.
+    This model stores student information including personal details,
+    academic placement (grade and section), and audit timestamps.
+
+    The model enforces data integrity through constraints:
+    - DNI must be exactly 8 digits
+    - Each student must have a unique grade-section combination
+    - Foreign key relationships ensure referential integrity
 
     Attributes:
-        id (int | None): The unique identifier for the student.
-        dni (str): The student's DNI (8-digit unique identifier).
-        names (str): The student's first names.
-        paternal_surname (str): The student's paternal surname.
-        maternal_surname (str): The student's maternal surname.
-        grade_id (int): The ID of the grade the student belongs to.
-        section_id (int): The ID of the section the student belongs to.
-        created_at (datetime | None): The timestamp when the student record was created.
-        updated_at (datetime | None): The timestamp when the student record was last updated.
+        id: Unique identifier for the student. Auto-generated primary key.
+        dni: National identification number. Must be exactly 8 digits.
+        names: Student's first names.
+        paternal_surname: Student's father's family name.
+        maternal_surname: Student's mother's family name.
+        grade_id: Foreign key reference to the student's grade.
+        section_id: Foreign key reference to the student's section.
+        created_at: Timestamp when the record was created. Set automatically.
+        updated_at: Timestamp of the last record update. Null if never updated.
+        grade: Relationship to the Grade model.
+        section: Relationship to the Section model.
+
+    Table Constraints:
+        - DNI must be 8 numeric characters
+        - Unique combination of grade_id and section_id per student
+        - Foreign keys prevent deletion of referenced grades/sections
+
+    Example:
+        >>> student = Student(
+        ...     dni="12345678",
+        ...     names="María José",
+        ...     paternal_surname="García",
+        ...     maternal_surname="López",
+        ...     grade_id=1,
+        ...     section_id=2
+        ... )
     """
 
     __tablename__ = "students"
