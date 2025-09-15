@@ -1,5 +1,5 @@
 from src.app.core.model import Page
-from ..response import StudentResponseDTO
+from .student_response_dto import StudentResponseDTO
 
 
 class StudentPageResponseDTO(Page):
