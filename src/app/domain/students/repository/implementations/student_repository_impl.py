@@ -141,7 +141,7 @@ class StudentRepositoryImpl(BaseRepository[Student], IStudentRepository):
         )
 
     @transactional(readonly=True)
-    async def find_global(self, page: int, size: int, search_query: str) -> Page:
+    async def find(self, page: int, size: int, search_query: str) -> Page:
         """Search for students across multiple fields with global text matching.
 
         Performs a flexible search that looks for matches in student DNI (exact match)
