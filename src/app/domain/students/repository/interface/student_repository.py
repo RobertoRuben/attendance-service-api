@@ -53,16 +53,32 @@ class IStudentRepository(IBaseRepository[Student], ABC):
                 - page: Current page number
                 - size: Items per page
                 - total_pages: Total number of pages available
+        """
+        pass
 
-        Raises:
-            ValueError: If page or size parameters are invalid (non-positive).
-            RepositoryError: If database operation fails.
+    @abstractmethod
+    async def find(self, page: int, size: int, search_query: str) -> Page:
+        """Find students by criteria with pagination.
 
-        Example:
-            >>> repository = StudentRepositoryImpl()
-            >>> result = await repository.get_pageable_students(page=1, size=20)
-            >>> print(f"Found {result.total_items} students")
-            >>> for student in result.items:
-            ...     print(f"{student.names} - {student.grade_name} {student.section_name}")
+        Searches for students based on provided criteria and returns
+        results in a paginated format. This method allows filtering
+        students by various attributes such as name, grade, or section.
+
+        Args:
+            page: The page number to retrieve (1-based indexing).
+                Must be a positive integer.
+            size: The number of items per page. Must be a positive
+                integer, typically between 10 and 100.
+            search_query: A string containing the search criteria.
+                keys are field names and values are the corresponding
+                search values.
+
+        Returns:
+            Page: A paginated result containing:
+                - items: List of Student objects matching the search criteria
+                - total_items: Total number of matching students
+                - page: Current page number
+                - size: Items per page
+                - total_pages: Total number of pages available
         """
         pass
