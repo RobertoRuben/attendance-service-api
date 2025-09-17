@@ -16,6 +16,7 @@ from sqlmodel import (
 
 if TYPE_CHECKING:
     from src.app.domain.classrooms.model import Section, Grade
+    from .student_photo import StudentPhoto
 
 
 class Student(SQLModel, table=True):
@@ -72,7 +73,6 @@ class Student(SQLModel, table=True):
     names: str = Field(sa_column=Column(TEXT, nullable=False))
     paternal_surname: str = Field(sa_column=Column(TEXT, nullable=False))
     maternal_surname: str = Field(sa_column=Column(TEXT, nullable=False))
-    photo_path: str | None = Field(default=None, sa_column=Column(TEXT, nullable=True))
     grade_id: int = Field(
         sa_column=Column(
             BIGINT,
@@ -102,3 +102,4 @@ class Student(SQLModel, table=True):
 
     grade: "Grade" = Relationship(back_populates="students")
     section: "Section" = Relationship(back_populates="students")
+    photos: list["StudentPhoto"] = Relationship(back_populates="student")
