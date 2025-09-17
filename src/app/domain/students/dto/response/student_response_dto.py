@@ -59,7 +59,7 @@ class StudentResponseDTO(BaseModel):
         description="Maternal surname of the student",
         examples=["Smith"],
     )
-    grade_id: str = Field(
+    grade_id: int = Field(
         description="Identifier of the grade",
         examples=["1"],
     )
