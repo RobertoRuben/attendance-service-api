@@ -72,6 +72,7 @@ class Student(SQLModel, table=True):
     names: str = Field(sa_column=Column(TEXT, nullable=False))
     paternal_surname: str = Field(sa_column=Column(TEXT, nullable=False))
     maternal_surname: str = Field(sa_column=Column(TEXT, nullable=False))
+    photo_path: str | None = Field(default=None, sa_column=Column(TEXT, nullable=True))
     grade_id: int = Field(
         sa_column=Column(
             BIGINT,
