@@ -150,6 +150,18 @@ class StudentServiceImpl(IStudentService):
                 message="Student not found.",
                 details=f"Student with id '{student_id}' does not exist.",
             )
+            
+        if not (await self.grade_repository.exists_by(id=student_request.grade_id)):
+            raise NotFoundException(
+                message="Grade not found.",
+                details=f"Grade with id '{student_request.grade_id}' does not exist.",
+            )
+            
+        if not (await self.section_repository.exists_by(id=student_request.section_id)):
+            raise NotFoundException(
+                message="Section not found.",
+                details=f"Section with id '{student_request.section_id}' does not exist.",
+            )
 
         if existing_student.dni != student_request.dni:
             if await self.student_repository.exists_by(dni=student_request.dni):
@@ -158,13 +170,16 @@ class StudentServiceImpl(IStudentService):
                     details=f"A student with DNI '{student_request.dni}' already exists.",
                 )
 
-            update_data = student_request.model_dump() | {
-                "updated_at": pendulum.now("America/Lima"),
-            }
+        update_data = student_request.model_dump() | {
+            "updated_at": pendulum.now("America/Lima"),
+        }
+        
+        print("Update data:")
+        print(update_data)
 
-            updated_student = await self.student_repository.update_by_id(
-                student_id, update_data
-            )
+        updated_student = await self.student_repository.update_by_id(
+            student_id, update_data
+        )
 
         return StudentResponseDTO.model_validate(updated_student)
 
@@ -239,7 +254,7 @@ class StudentServiceImpl(IStudentService):
                 details="Page and size must be positive integers.",
             )
 
-        page_result = await self.student_repository.get_pageable(page, size)
+        page_result = await self.student_repository.get_pageable_students(page, size)
         items = [
             StudentResponseDTO.model_validate(student) for student in page_result.data
         ]
