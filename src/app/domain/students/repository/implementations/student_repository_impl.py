@@ -114,11 +114,14 @@ class StudentRepositoryImpl(BaseRepository[Student], IStudentRepository):
             .join(Grade, Student.grade_id == Grade.id)
             .join(Section, Student.section_id == Section.id)
             .order_by(Student.id)
+            .offset(offset_value)
+            .limit(size)
         )
 
-        stmt = stmt.offset(offset_value).limit(size)
         result = await self.session.exec(stmt)
+
         students_data = [dict(row._mapping) for row in result]
+
 
         count_stmt = select(func.count(Student.id))
         count_result = await self.session.exec(count_stmt)
@@ -130,7 +133,7 @@ class StudentRepositoryImpl(BaseRepository[Student], IStudentRepository):
 
         return Page(
             data=students_data,
-            page_info=Pagination(
+            meta=Pagination(
                 current_page=page,
                 per_page=size,
                 total=total_items,
