@@ -10,7 +10,6 @@ from src.app.core.exception import (
 )
 from src.app.core.exception.decorator import (
     controller_handle_exceptions,
-    validation_handle_exceptions,
 )
 from src.app.core.model import MessageResponse
 from src.app.domain.students.dto.request import StudentRequestDTO
@@ -487,7 +486,6 @@ async def get_student_by_id(
     All student DNIs must remain unique across the system to prevent duplicates and maintain data consistency.
     """,
 )
-@validation_handle_exceptions
 @controller_handle_exceptions
 async def update_student(
     request: Request,
