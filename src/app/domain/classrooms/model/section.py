@@ -1,15 +1,47 @@
 from datetime import datetime
-from sqlalchemy import CheckConstraint
-from sqlmodel import SQLModel, Field, Column, BIGINT, TEXT, DateTime, text
+from typing import TYPE_CHECKING
+from sqlmodel import (
+    SQLModel,
+    Field,
+    Column,
+    BIGINT,
+    TEXT,
+    DateTime,
+    text,
+    CheckConstraint,
+    Relationship,
+)
+
+if TYPE_CHECKING:
+    from src.app.domain.students.model import Student
 
 
 class Section(SQLModel, table=True):
-    """Represents a section in the system.
+    """Represents a section within a grade in the educational system.
 
-    :ivar id: The unique identifier for the section.
-    :ivar section_name: The name of the section.
-    :ivar created_at: The timestamp when the section was created.
-    :ivar updated_at: The timestamp when the section was last updated.
+    This model stores section information including the section name and
+    audit timestamps. Sections are used to divide students within the same
+    grade into different classroom groups.
+
+    The model enforces data integrity through constraints:
+    - Section names cannot be empty or contain only whitespace
+    - Section names must be unique across the system
+
+    Attributes:
+        id: Unique identifier for the section. Auto-generated primary key.
+        section_name: Name of the section (e.g., "A", "B", "Blue", "Red").
+            Must be unique and non-empty.
+        created_at: Timestamp when the record was created. Set automatically.
+        updated_at: Timestamp of the last record update. Null if never updated.
+        students: List of students assigned to this section.
+
+    Table Constraints:
+        - Section name must not be empty after trimming whitespace
+        - Section name must be unique across all sections
+
+    Example:
+        >>> section = Section(section_name="Section A")
+        >>> # The section will be automatically assigned an ID and creation timestamp
     """
 
     __tablename__ = "sections"
@@ -32,3 +64,5 @@ class Section(SQLModel, table=True):
         default=None,
         sa_column=Column(DateTime(timezone=True)),
     )
+
+    students: list["Student"] = Relationship(back_populates="section")

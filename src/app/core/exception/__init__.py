@@ -6,10 +6,10 @@ from .invalid_field_exception import InvalidFieldException
 from .not_found_exception import NotFoundException
 from .server_exception import ServerException
 from .unauthorized_exception import UnauthorizedException
-from .globals import register_exception_handlers
+from .unprocessable_entity_exception import UnprocessableEntityException
+
 
 __all__ = [
-    "register_exception_handlers",
     "BadRequestException",
     "ConflictException",
     "DatabaseException",
@@ -18,4 +18,5 @@ __all__ = [
     "ServerException",
     "UnauthorizedException",
     "ForbiddenException",
+    "UnprocessableEntityException",
 ]
