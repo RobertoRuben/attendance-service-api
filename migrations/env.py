@@ -6,8 +6,6 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from sqlmodel import SQLModel
 from alembic import context
 from src.app.core.config import settings
-from src.app.domain.classrooms.model import Grade, Section
-from src.app.domain.students.model import Student
 
 config = context.config
 
