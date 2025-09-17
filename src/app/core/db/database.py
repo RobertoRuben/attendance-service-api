@@ -1,3 +1,4 @@
+from sqlalchemy import text
 from sqlmodel import SQLModel
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -6,7 +7,7 @@ from src.app.core.config import settings
 from src.app.domain.classrooms.model.grade import Grade  # noqa: F401
 from src.app.domain.classrooms.model.section import Section  # noqa: F401
 from src.app.domain.students.enum import PhotoQuality  # noqa: F401
-from src.app.domain.students.model.student import Student, StudentPhoto  # noqa: F401
+from src.app.domain.students.model import Student, StudentPhoto  # noqa: F401
 
 postgres_url = settings.database_url
 
@@ -41,4 +42,5 @@ async def init_db():
     """
 
     async with engine.begin() as conn:
+        await conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
         await conn.run_sync(SQLModel.metadata.create_all)
