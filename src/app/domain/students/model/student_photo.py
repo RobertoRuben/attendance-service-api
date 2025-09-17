@@ -4,12 +4,14 @@ from sqlmodel import (
     SQLModel,
     Field,
     Column,
+    ForeignKey,
     BIGINT,
     TEXT,
     BOOLEAN,
     DateTime,
     text,
 )
+from pgvector.sqlalchemy import Vector
 from src.app.domain.students.enum import PhotoQuality
 from src.app.domain.students.model.student import Student
 
@@ -21,9 +23,11 @@ class StudentPhoto(SQLModel, table=True):
     student_id: int = Field(
         sa_column=Column(
             BIGINT,
+            ForeignKey(
+                "students.id", name="fk_student_photos_student", ondelete="CASCADE"
+            ),
             nullable=False,
             index=True,
-            foreign_key="students.id",
         ),
     )
     file_path: str | None = Field(default=None, sa_column=Column(TEXT, nullable=True))
@@ -33,7 +37,13 @@ class StudentPhoto(SQLModel, table=True):
         default=False, sa_column=Column(BOOLEAN, nullable=False)
     )
     face_confidence: float | None = Field(default=None, ge=0.0, le=1.0)
-
+    embedding_model: str | None = Field(
+        default=None, sa_column=Column(TEXT, nullable=True)
+    )
+    face_embedding: list[float] | None = Field(
+        default=None,
+        sa_column=Column(Vector(4096), nullable=True),
+    )
     created_at: datetime | None = Field(
         default=None,
         sa_column=Column(
