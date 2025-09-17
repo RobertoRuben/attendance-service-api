@@ -1,6 +1,5 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
-from sqlalchemy import UniqueConstraint
 from sqlmodel import (
     SQLModel,
     Field,
@@ -64,7 +63,6 @@ class Student(SQLModel, table=True):
         CheckConstraint(
             "char_length(dni) = 8 AND dni ~ '^[0-9]{8}$'", name="ck_student_dni_8digits"
         ),
-        UniqueConstraint("grade_id", "section_id", name="uq_students_grade_section"),
     )
 
     id: int | None = Field(default=None, sa_column=Column(BIGINT, primary_key=True))
