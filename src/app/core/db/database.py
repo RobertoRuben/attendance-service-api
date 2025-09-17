@@ -3,10 +3,10 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.pool import AsyncAdaptedQueuePool
 from src.app.core.config import settings
-
 from src.app.domain.classrooms.model.grade import Grade  # noqa: F401
 from src.app.domain.classrooms.model.section import Section  # noqa: F401
-from src.app.domain.students.model.student import Student  # noqa: F401
+from src.app.domain.students.enum import PhotoQuality  # noqa: F401
+from src.app.domain.students.model.student import Student, StudentPhoto  # noqa: F401
 
 postgres_url = settings.database_url
 
