@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 from sqlmodel import (
     Relationship,
     SQLModel,
@@ -13,7 +14,9 @@ from sqlmodel import (
 )
 from pgvector.sqlalchemy import Vector
 from src.app.domain.students.enum import PhotoQuality
-from src.app.domain.students.model.student import Student
+
+if TYPE_CHECKING:
+    from .student import Student
 
 
 class StudentPhoto(SQLModel, table=True):
