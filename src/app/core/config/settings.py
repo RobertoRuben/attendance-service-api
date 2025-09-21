@@ -5,18 +5,6 @@ from urllib.parse import quote_plus
 class Settings(BaseSettings):
     """
     Application configuration settings loaded from environment variables.
-
-    This class manages all configuration parameters required for database connectivity
-    and other application settings. Values can be loaded from environment variables
-    or from a .env file.
-
-    Attributes:
-        DB_ECHO_LOG (bool): Flag to enable/disable SQL query logging. Defaults to True.
-        DB_HOST (str): Database server hostname or IP address.
-        DB_PORT (str): Database server port.
-        DB_NAME (str): Database name.
-        DB_USER (str): Database username.
-        DB_PASSWORD (str): Database password.
     """
 
     API_BASE_URL: str
@@ -33,16 +21,15 @@ class Settings(BaseSettings):
     ARGON2_HASH_LEN: int = 32
     ARGON2_SALT_LEN: int = 16
 
+    STORAGE_TYPE: str
+    LOCAL_STORAGE_PATH: str  
+    STORAGE_CREATE_DIRS: bool
+    STORAGE_MAX_FILE_SIZE_MB: int
+
     @property
     def database_url(self) -> str:
         """
         Constructs a properly formatted PostgreSQL connection string.
-
-        Generates a connection URL for asyncpg with properly URL-encoded username
-        and password to handle special characters.
-
-        Returns:
-            str: Formatted PostgreSQL connection string for asyncpg.
         """
         user = quote_plus(self.DB_USER)
         password = quote_plus(self.DB_PASSWORD)
@@ -51,8 +38,6 @@ class Settings(BaseSettings):
     class Config:
         """
         Configuration class for pydantic settings behavior.
-
-        Specifies the location of the environment file to load variables from.
         """
 
         env_file = ".env"
