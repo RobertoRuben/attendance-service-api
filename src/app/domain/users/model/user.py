@@ -1,5 +1,5 @@
 from sqlmodel import SQLModel, Field, BIGINT, TEXT, Column
-from sqlalchemy import Enum as SQLEnum
+from sqlalchemy import Boolean, Enum as SQLEnum
 from ..enum import RoleEnum
 
 
@@ -26,3 +26,4 @@ class User(SQLModel, table=True):
     names: str = Field(sa_column=Column(TEXT, nullable=False))
     paternal_surname: str = Field(sa_column=Column(TEXT, nullable=False))
     maternal_surname: str = Field(sa_column=Column(TEXT, nullable=False))
+    is_active: bool = Field(default=False, sa_column=Column(Boolean, nullable=False))
