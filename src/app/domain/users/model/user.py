@@ -18,10 +18,12 @@ class User(SQLModel, table=True):
         paternal_surname (str): Paternal surname.
         maternal_surname (str): Maternal surname.
     """
+
     id: int | None = Field(default=None, sa_column=Column(BIGINT, primary_key=True))
     username: str = Field(sa_column=Column(TEXT, unique=True))
+    email: str = Field(sa_column=Column(TEXT, unique=True, nullable=False))
     role: RoleEnum = Field(sa_column=Column(SQLEnum(RoleEnum), nullable=False))
-    password: str = Field(sa_column=Column(TEXT, nullable=False))
+    password: str | None = Field(default=None, sa_column=Column(TEXT, nullable=False))
     dni: str = Field(sa_column=Column(TEXT, unique=True, nullable=False))
     names: str = Field(sa_column=Column(TEXT, nullable=False))
     paternal_surname: str = Field(sa_column=Column(TEXT, nullable=False))
