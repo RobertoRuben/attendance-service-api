@@ -1,4 +1,13 @@
-from sqlmodel import SQLModel, Field, BIGINT, TEXT, Column
+from datetime import datetime
+from sqlmodel import (
+    SQLModel,
+    Field,
+    BIGINT,
+    TEXT,
+    DateTime,
+    Column,
+    text,
+)
 from sqlalchemy import Boolean, Enum as SQLEnum
 from ..enum import RoleEnum
 
@@ -29,3 +38,14 @@ class User(SQLModel, table=True):
     paternal_surname: str = Field(sa_column=Column(TEXT, nullable=False))
     maternal_surname: str = Field(sa_column=Column(TEXT, nullable=False))
     is_active: bool = Field(default=False, sa_column=Column(Boolean, nullable=False))
+    created_at: datetime | None = Field(
+        default=None,
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=text("CURRENT_TIMESTAMP"),
+        ),
+    )
+    updated_at: datetime | None = Field(
+        default=None,
+        sa_column=Column(DateTime(timezone=True)),
+    )
